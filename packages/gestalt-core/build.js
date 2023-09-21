@@ -134,25 +134,25 @@ const plugins = (name) => [
   cssModules({
     output: `../${name}/dist/${name}`,
   }),
-  // nodeResolve(),
-  // replace({
-  //   preventAssignment: true,
-  //   values: {
-  //     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-  //   },
-  // }),
-  // svgPath(),
-  // json({
-  //   preferConst: true,
-  // }),
-  // babel({
-  //   babelHelpers: 'bundled',
-  //   babelrc: false,
-  //   exclude: 'node_modules/**',
-  //   rootMode: 'upward',
-  //   shouldPrintComment: (comment) => /[#@]__PURE__/.exec(comment),
-  // }),
-  // commonjs(),
+  nodeResolve(),
+  replace({
+    preventAssignment: true,
+    values: {
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    },
+  }),
+  svgPath(),
+  json({
+    preferConst: true,
+  }),
+  babel({
+    babelHelpers: 'bundled',
+    babelrc: false,
+    exclude: 'node_modules/**',
+    rootMode: 'upward',
+    shouldPrintComment: (comment) => /[#@]__PURE__/.exec(comment),
+  }),
+  commonjs(),
 ];
 
 export default plugins;

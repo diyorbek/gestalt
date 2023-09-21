@@ -84,6 +84,9 @@ import Video from './Video.js';
 import WashAnimated from './WashAnimated.js';
 import { CompositeZIndex, FixedZIndex } from './zIndex.js';
 
+// this should make vite process `composed` (not imported) css files
+// import.meta.glob('./*.css', { eager: true });
+
 export {
   ActivationCard,
   Avatar,

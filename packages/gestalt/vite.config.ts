@@ -1,8 +1,18 @@
 import { defineConfig, transformWithEsbuild } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { parseString } from 'xml2js';
+import fs from 'fs';
 import { flowPlugin, esbuildFlowPlugin } from '@bunchtogether/vite-plugin-flow';
-import { cssModules } from '../gestalt-core/build.js';
+import { cssModules } from '../gestalt-core/build';
+import loadCssModuleFile from './vite-plugin-css-modules';
+import postcssPresetEnv from 'postcss-preset-env';
+
+const breakpoints = {
+  '--g-sm': '(min-width: 576px)',
+  '--g-md': '(min-width: 768px)',
+  '--g-lg': '(min-width: 1312px)',
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,10 +32,31 @@ export default defineConfig({
         });
       },
     },
-    react(),
-    cssModules({
-      output: `./dist/gestalt`,
-    }),
+    loadCssModuleFile({ include: (id) => id.includes('.css') }),
+    // react(),
+    {
+      enforce: 'pre',
+      name: 'svgPath',
+      load(id) {
+        if (!id.includes('.svg')) {
+          return null;
+        }
+
+        const data = fs.readFileSync(id, 'utf-8');
+
+        return new Promise((resolve, reject) => {
+          parseString(data, (err, result) => {
+            if (err) {
+              reject(err);
+            } else {
+              const path = result.svg.path[0].$.d;
+              const code = `export default '${path}';`;
+              resolve({ code });
+            }
+          });
+        });
+      },
+    },
   ],
   build: {
     lib: {
@@ -40,6 +71,8 @@ export default defineConfig({
         assetFileNames: 'gestalt.[ext]',
       },
     },
+    minify: false,
+    cssMinify: true,
     sourcemap: true,
   },
   optimizeDeps: {
@@ -47,10 +80,22 @@ export default defineConfig({
       plugins: [esbuildFlowPlugin()],
     },
   },
-  // css: {
-  //   modules: {
-  //     localsConvention: 'dashes',
-  //     generateScopedName: '[hash:base64:2]',
-  //   },
-  // },
+  css: {
+    postcss: {
+      plugins: [
+        postcssPresetEnv({
+          features: {
+            'custom-properties': false,
+            'custom-media-queries': {
+              importFrom: [{ customMedia: breakpoints }], // this is not being applied to `composed` css files, only to imported ones to js
+            },
+          },
+        }),
+      ],
+    },
+    modules: {
+      localsConvention: 'dashes',
+      generateScopedName: '[hash:base64:4]', // needs to be replaced with existing classname generator
+    },
+  },
 });
