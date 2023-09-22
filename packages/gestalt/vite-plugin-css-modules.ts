@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { extname } from 'path';
 import fs from 'fs';
 import type { Plugin, ResolvedConfig } from 'vite';
 

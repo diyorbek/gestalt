@@ -7,6 +7,7 @@ import { flowPlugin, esbuildFlowPlugin } from '@bunchtogether/vite-plugin-flow';
 import { cssModules } from '../gestalt-core/build';
 import loadCssModuleFile from './vite-plugin-css-modules';
 import postcssPresetEnv from 'postcss-preset-env';
+import postcss from 'postcss';
 
 const breakpoints = {
   '--g-sm': '(min-width: 576px)',
@@ -57,6 +58,17 @@ export default defineConfig({
         });
       },
     },
+    {
+      name: 'post-postcss',
+      enforce: 'post',
+      async generateBundle(_, outbun, __) {
+        const chunk = outbun['gestalt.css'];
+
+        if (chunk?.type === 'asset') {
+          chunk.source = await postCSS(chunk.source as string);
+        }
+      },
+    },
   ],
   build: {
     lib: {
@@ -99,3 +111,32 @@ export default defineConfig({
     },
   },
 });
+
+async function postCSS(source: string) {
+  const result = await postcss([
+    postcssPresetEnv({
+      features: {
+        'custom-properties': true,
+        'custom-media-queries': {
+          preserve: false,
+          importFrom: [
+            {
+              customMedia: {
+                '--g-sm': '(min-width: 576px)',
+                '--g-md': '(min-width: 768px)',
+                '--g-lg': '(min-width: 1312px)',
+              },
+            },
+          ],
+        },
+      },
+    }),
+  ]).process(source);
+
+  return (
+    await transformWithEsbuild(result.css, 'output.css', {
+      loader: 'css',
+      minify: true,
+    })
+  ).code;
+}
