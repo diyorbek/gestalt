@@ -1,9 +1,9 @@
 // @flow strict
 
-export type siteIndexType = {|
+export type siteIndexType = {
   sectionName: string,
   pages: $ReadOnlyArray<string | siteIndexType>,
-|};
+};
 
 // siteIndex is the source of truth for the side navigation menu.
 // siteIndex establishes the sidebar hierarchical menu order:
@@ -48,6 +48,7 @@ const siteIndex: $ReadOnlyArray<siteIndexType> = [
       'Overview',
       'Component status',
       'Avatar',
+      'AvatarGroup',
       'Badge',
       'Button',
       'ButtonGroup',
@@ -55,6 +56,7 @@ const siteIndex: $ReadOnlyArray<siteIndexType> = [
       'Icon',
       'IconButton',
       'IconButtonFloating',
+      'ListAction',
       'SearchField',
       'Sheet',
       'Switch',
@@ -71,6 +73,7 @@ const siteIndex: $ReadOnlyArray<siteIndexType> = [
       'Overview',
       'Component status',
       'Avatar',
+      'Badge',
       'Button',
       {
         sectionName: 'Card',
@@ -79,10 +82,13 @@ const siteIndex: $ReadOnlyArray<siteIndexType> = [
       'Checkbox',
       'Icon',
       'IconButton',
+      'ListAction',
+      'SearchField',
       'Sheet',
       'Switch',
       'Tabs',
       'Text',
+      'TextArea',
       'TextField',
       'Toast',
     ],
@@ -113,7 +119,7 @@ const siteIndex: $ReadOnlyArray<siteIndexType> = [
       'ButtonLink',
       'ButtonGroup',
       'Callout',
-      'Chart',
+      'ChartGraph',
       'Checkbox',
       'Collage',
       'Column',
@@ -240,6 +246,16 @@ const siteIndex: $ReadOnlyArray<siteIndexType> = [
         sectionName: 'Messaging',
         pages: ['Overview', 'Priority and placement', 'Available components'],
       },
+      {
+        sectionName: 'RTL guidelines',
+        pages: [
+          'About international design',
+          'RTL overview',
+          'Layout and text direction',
+          'Icons',
+          'Typography',
+        ],
+      },
       'Screen sizes',
 
       {
@@ -250,7 +266,7 @@ const siteIndex: $ReadOnlyArray<siteIndexType> = [
   },
   {
     sectionName: 'Blog',
-    pages: ['2023 Q2 Newsletter', '2023 Q1 Newsletter'],
+    pages: ['2023 Q3 Newsletter', '2023 Q2 Newsletter', '2023 Q1 Newsletter'],
   },
   {
     sectionName: 'Team support',

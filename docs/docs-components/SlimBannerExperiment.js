@@ -3,7 +3,7 @@ import { type Node } from 'react';
 import { SlimBanner } from 'gestalt';
 import { useAppContext } from './appContext.js';
 
-export function BareSlimBannerExperiment({ componentName }: {| componentName: string |}): Node {
+export function BareSlimBannerExperiment({ componentName }: { componentName: string }): Node {
   const { experiments } = useAppContext();
 
   return (
@@ -33,12 +33,12 @@ export function SlimBannerExperiment({
   description,
   pullRequest,
   section,
-}: {|
+}: {
   componentName: string,
   description: string,
   pullRequest: number,
   section: string,
-|}): Node {
+}): Node {
   const { experiments, setExperiments } = useAppContext();
 
   return (
@@ -61,6 +61,7 @@ export function SlimBannerExperiment({
         label: experiments === componentName ? 'Deactivate experiments' : 'Activate experiments',
         onClick: () => setExperiments(experiments === componentName ? '' : componentName),
         href: section,
+        role: 'link',
       }}
     />
   );

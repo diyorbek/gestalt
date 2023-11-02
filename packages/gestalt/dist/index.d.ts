@@ -1,3 +1,4 @@
+import { ChartGraph } from '../../gestalt-charts/dist/index';
 import React = require('react');
 
 /**
@@ -27,12 +28,13 @@ type ReactForwardRef<T, P> = React.ForwardRefExoticComponent<
 type FourDirections = 'up' | 'right' | 'down' | 'left';
 type PopoverDirections = 'up' | 'right' | 'down' | 'left' | 'forceDown';
 
-type TapAreaEventHandlerType = AbstractEventHandler<
-  | React.MouseEvent<HTMLDivElement>
-  | React.KeyboardEvent<HTMLDivElement>
-  | React.MouseEvent<HTMLAnchorElement>
-  | React.KeyboardEvent<HTMLAnchorElement>,
+type TapAreaLinkEventHandlerType = AbstractEventHandler<
+  React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent<HTMLAnchorElement>,
   { dangerouslydangerouslyDisableOnNavigation?: (() => void) | undefined }
+>;
+
+type TapAreaEventHandlerType = AbstractEventHandler<
+  React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
 >;
 
 type BareButtonEventHandlerType = AbstractEventHandler<
@@ -42,11 +44,20 @@ type BareButtonEventHandlerType = AbstractEventHandler<
   | React.KeyboardEvent<HTMLButtonElement>
 >;
 
-type ButtonEventHandlerType = AbstractEventHandler<
+type IconButtonEventHandlerType = AbstractEventHandler<
   | React.MouseEvent<HTMLButtonElement>
   | React.MouseEvent<HTMLAnchorElement>
   | React.KeyboardEvent<HTMLAnchorElement>
   | React.KeyboardEvent<HTMLButtonElement>,
+  { dangerouslyDisableOnNavigation?: (() => void) | undefined }
+>;
+
+type ButtonEventHandlerType = AbstractEventHandler<
+  React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>
+>;
+
+type ButtonLinkEventHandlerType = AbstractEventHandler<
+  React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent<HTMLAnchorElement>,
   { dangerouslyDisableOnNavigation?: (() => void) | undefined }
 >;
 
@@ -88,12 +99,16 @@ interface Indexable {
 }
 
 type Icons =
+  | '3D'
+  | '3D-move'
+  | 'accessibility'
   | 'ad'
   | 'ad-group'
   | 'add'
   | 'add-circle'
   | 'add-layout'
   | 'add-pin'
+  | 'add-section'
   | 'ads-stats'
   | 'ads-overview'
   | 'alert'
@@ -108,19 +123,27 @@ type Icons =
   | 'align-top'
   | 'android-share'
   | 'angled-pin'
+  | 'api'
+  | 'apple'
   | 'apps'
   | 'arrow-back'
+  | 'arrow-circle-back'
   | 'arrow-circle-down'
   | 'arrow-circle-forward'
   | 'arrow-circle-up'
   | 'arrow-down'
   | 'arrow-end'
   | 'arrow-forward'
+  | 'arrow-left-curved'
   | 'arrow-start'
   | 'arrow-up'
   | 'arrow-up-right'
   | 'bell'
+  | 'board'
+  | 'briefcase'
+  | 'business-hierarchy'
   | 'calendar'
+  | 'calendar-check'
   | 'camera'
   | 'camera-roll'
   | 'cancel'
@@ -133,12 +156,16 @@ type Icons =
   | 'clear'
   | 'clock'
   | 'code'
+  | 'code-checked'
   | 'cog'
   | 'compass'
   | 'compose'
   | 'copy-to-clipboard'
   | 'crop'
+  | 'data-source'
   | 'dash'
+  | 'desktop'
+  | 'diagnostics'
   | 'conversion-tag'
   | 'credit-card'
   | 'directional-arrow-left'
@@ -162,6 +189,7 @@ type Icons =
   | 'fill-transparent'
   | 'filter'
   | 'flag'
+  | 'flame'
   | 'flash'
   | 'flashlight'
   | 'flipHorizontal'
@@ -177,23 +205,30 @@ type Icons =
   | 'heart'
   | 'heart-outline'
   | 'heart-broken'
+  | 'heart-health'
   | 'history'
   | 'home'
   | 'idea-pin'
+  | 'image-portrait'
   | 'impressum'
   | 'insights-audience'
   | 'insights-conversions'
+  | 'instagram'
+  | 'invoice'
   | 'info-circle'
   | 'key'
   | 'knoop'
   | 'lightbulb'
   | 'lightning-bolt-circle'
   | 'link'
+  | 'live'
   | 'location'
   | 'lock'
   | 'logo-large'
   | 'logo-small'
   | 'logout'
+  | 'manage-access'
+  | 'magic-pen'
   | 'margins-large'
   | 'margins-medium'
   | 'margins-small'
@@ -201,9 +236,11 @@ type Icons =
   | 'megaphone'
   | 'menu'
   | 'minimize'
+  | 'mobile'
   | 'moon'
   | 'move'
   | 'mute'
+  | 'move-pin'
   | 'music-off'
   | 'music-on'
   | 'overlay-text'
@@ -226,6 +263,8 @@ type Icons =
   | 'replace'
   | 'report'
   | 'rotate'
+  | 'save-outline'
+  | 'saved'
   | 'scale'
   | 'search'
   | 'security'
@@ -240,10 +279,14 @@ type Icons =
   | 'sparkle'
   | 'speech'
   | 'speech-ellipsis'
+  | 'speech-exclamation-point'
+  | 'speech-outline'
+  | 'star-outline'
   | 'star'
   | 'star-half'
   | 'sun'
   | 'switch-account'
+  | 'table'
   | 'tag'
   | 'terms'
   | 'text-align-left'
@@ -258,20 +301,28 @@ type Icons =
   | 'text-size'
   | 'text-small'
   | 'text-spacing'
+  | 'thumbs-down'
+  | 'thumbs-up'
   | 'trash-can'
+  | 'target'
   | 'trending'
   | 'twitter'
+  | 'video-advance-10-seconds'
   | 'video-camera'
+  | 'video-rewind-10-seconds'
   | 'view-type-default'
   | 'view-type-dense'
   | 'view-type-list'
   | 'visit'
+  | 'whats-app'
+  | 'wifi-no'
   | 'workflow-status-all'
   | 'workflow-status-canceled'
   | 'workflow-status-halted'
   | 'workflow-status-in-progress'
   | 'workflow-status-ok'
   | 'workflow-status-problem'
+  | 'workflow-status-queued'
   | 'workflow-status-unstarted'
   | 'workflow-status-warning';
 
@@ -319,13 +370,22 @@ type TrendObject = {
   value: number;
 };
 
-interface ActionData {
+interface ButtonActionData {
   accessibilityLabel: string;
   disabled?: boolean;
-  href?: string | undefined;
   label: string;
   onClick?: ButtonEventHandlerType | undefined;
+  role?: 'button';
+}
+
+interface LinkActionData {
+  accessibilityLabel: string;
+  disabled?: boolean;
+  href: string | undefined;
+  label: string;
+  onClick?: ButtonLinkEventHandlerType | undefined;
   rel?: RelType | undefined;
+  role: 'link';
   target?: TargetType | undefined;
 }
 
@@ -357,6 +417,18 @@ interface DefaultLabelProviderProps {
           iconAccessibilityLabelRecommendation: string;
           iconAccessibilityLabelWarning: string;
           iconAccessibilityLabelSuccess: string;
+        };
+        ChartGraph: {
+          accessibilityLabelPrefixText: string;
+          defaultViewText: string;
+          accessibleViewText: string;
+          tabularData: string;
+          accessibilityLabelDismissModal: string;
+          tableSeriesText: string;
+          tableXAxisText: string;
+          tableYAxisText: string;
+          downloadCsvButtonText: string;
+          cancelButtonText: string;
         };
         ComboBox: {
           noResultText: string;
@@ -446,6 +518,10 @@ interface DeviceTypeProviderProps {
 
 interface GlobalEventsHandlerProviderProps {
   children: Node;
+  dateFieldHandlers?: {onRender?: (() => void) | undefined;} | undefined;
+  datePickerHandlers?: {onRender?: (() => void) | undefined;} | undefined;
+  dateRangeHandlers?: {onRender?: (() => void) | undefined;} | undefined;
+  radioGroupHandlers?: {onRender?: (() => void) | undefined;} | undefined;
   linkHandlers?: {
     onNavigation: (arg: {
       href: string;
@@ -485,7 +561,7 @@ interface ActivationCardProps {
         accessibilityLabel: string;
         href: string;
         label: string;
-        onClick?: ButtonEventHandlerType | undefined;
+        onClick?: ButtonLinkEventHandlerType | undefined;
         rel?: RelType | undefined;
         target?: TargetType | undefined;
       }
@@ -509,7 +585,15 @@ interface AvatarGroupProps {
   accessibilityHaspopup?: boolean | undefined;
   addCollaborators?: boolean | undefined;
   href?: string | undefined;
-  onClick?: TapAreaEventHandlerType | undefined;
+  onClick?:
+    | AbstractEventHandler<
+        | React.MouseEvent<HTMLDivElement>
+        | React.KeyboardEvent<HTMLDivElement>
+        | React.MouseEvent<HTMLAnchorElement>
+        | React.KeyboardEvent<HTMLAnchorElement>,
+        { dangerouslydangerouslyDisableOnNavigation?: (() => void) | undefined }
+      >
+    | undefined;
   role?: 'button' | 'link' | undefined;
   size?: 'xs' | 'sm' | 'md' | 'fit' | undefined;
 }
@@ -678,8 +762,10 @@ interface BoxProps extends BoxPassthroughProps {
   zIndex?: Indexable | undefined;
 }
 
-interface CommonButtonProps {
-  text: string;
+interface ButtonProps {
+  accessibilityControls?: string | undefined;
+  accessibilityExpanded?: boolean | undefined;
+  accessibilityHaspopup?: boolean | undefined;
   accessibilityLabel?: string | undefined;
   color?:
     | 'gray'
@@ -694,35 +780,38 @@ interface CommonButtonProps {
   disabled?: boolean | undefined;
   fullWidth?: boolean | undefined;
   iconEnd?: Icons | undefined;
+  name?: string | undefined;
   onClick?: ButtonEventHandlerType | undefined;
+  selected?: boolean | undefined;
   size?: 'sm' | 'md' | 'lg' | undefined;
   tabIndex?: -1 | 0 | undefined;
+  text: string;
+  type?: 'button' | 'submit' | undefined;
 }
 
-interface ButtonLinkProps extends CommonButtonProps {
-  role: 'link';
+interface ButtonLinkProps {
+  accessibilityLabel?: string | undefined;
+  color?:
+    | 'gray'
+    | 'red'
+    | 'blue'
+    | 'transparent'
+    | 'semiTransparentWhite'
+    | 'transparentWhiteText'
+    | 'white'
+    | undefined;
+  dataTestId?: string;
+  disabled?: boolean | undefined;
+  iconEnd?: Icons | undefined;
+  fullWidth?: boolean | undefined;
+  tabIndex?: -1 | 0 | undefined;
+  onClick?: ButtonLinkEventHandlerType | undefined;
+  size?: 'sm' | 'md' | 'lg' | undefined;
+  text: string;
   href: string;
   rel?: RelType | undefined;
   target?: TargetType | undefined;
 }
-
-interface ButtonButtonProps extends CommonButtonProps {
-  accessibilityControls?: string | undefined;
-  accessibilityExpanded?: boolean | undefined;
-  accessibilityHaspopup?: boolean | undefined;
-  name?: string | undefined;
-  selected?: boolean | undefined;
-  role?: 'button' | undefined;
-  type?: 'button' | undefined;
-}
-
-interface ButtonSubmitProps extends CommonButtonProps {
-  name?: string | undefined;
-  role: 'button';
-  type: 'submit';
-}
-
-type ButtonProps = ButtonLinkProps | ButtonButtonProps | ButtonSubmitProps;
 
 interface ButtonGroupProps {
   children?: Node | undefined;
@@ -738,8 +827,8 @@ interface CalloutProps {
         onDismiss: () => void;
       }
     | undefined;
-  primaryAction?: ActionData | undefined;
-  secondaryAction?: ActionData | undefined;
+  primaryAction?: ButtonActionData | LinkActionData | undefined;
+  secondaryAction?: ButtonActionData | LinkActionData | undefined;
   title?: string | undefined;
 }
 
@@ -1001,8 +1090,12 @@ interface IconProps {
   size?: number | string | undefined;
 }
 
-interface CommonIconButtonProps {
+interface IconButtonProps {
   accessibilityLabel: string;
+  accessibilityControls?: string | undefined;
+  accessibilityExpanded?: boolean | undefined;
+  accessibilityHaspopup?: boolean | undefined;
+  accessibilityPopupRole?: 'menu' | 'dialog' | undefined;
   bgColor?:
     | 'transparent'
     | 'darkGray'
@@ -1017,41 +1110,23 @@ interface CommonIconButtonProps {
   disabled?: boolean | undefined;
   icon?: Icons | undefined;
   iconColor?: 'gray' | 'darkGray' | 'red' | 'white' | 'brandPrimary' | undefined;
-  onClick?: ButtonEventHandlerType | undefined;
+  name?: string;
+  onClick?:
+    | AbstractEventHandler<
+        React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>
+      >
+    | undefined;
   padding?: 1 | 2 | 3 | 4 | 5 | undefined;
+  selected?: boolean | undefined;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | undefined;
   tabIndex?: -1 | 0 | undefined;
+  type?: 'button' | 'submit' | undefined;
   tooltip?:
     | Pick<TooltipProps, 'accessibilityLabel' | 'inline' | 'idealDirection' | 'text' | 'zIndex'>
     | undefined;
 }
 
-interface IconButtonLinkProps extends CommonIconButtonProps {
-  role: 'link';
-  href: string;
-  rel?: RelType | undefined;
-  target?: TargetType | undefined;
-}
-
-interface IconButtonButtonProps extends CommonIconButtonProps {
-  role?: 'button' | undefined;
-  type?: 'button' | undefined;
-  accessibilityControls?: string | undefined;
-  accessibilityExpanded?: boolean | undefined;
-  accessibilityHaspopup?: boolean | undefined;
-  accessibilityPopupRole?: 'menu' | 'dialog' | undefined;
-  name?: string;
-  selected?: boolean | undefined;
-}
-
-interface IconButtonSubmitProps extends CommonIconButtonProps {
-  role: 'button' | undefined;
-  type: 'submit';
-}
-
-type IconButtonProps = IconButtonLinkProps | IconButtonButtonProps | IconButtonSubmitProps;
-
-interface IconButtonLinkCmpProps {
+interface IconButtonLinkProps {
   accessibilityLabel: string;
   bgColor?:
     | 'transparent'
@@ -1088,7 +1163,9 @@ interface IconButtonFloatingProps {
   accessibilityPopupRole: 'menu' | 'dialog';
   accessibilityLabel: string;
   icon: Icons;
-  onClick: ButtonEventHandlerType;
+  onClick: AbstractEventHandler<
+    React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>
+  >;
   tooltip: {
     accessibilityLabel?: string | undefined;
     inline?: boolean | undefined;
@@ -1142,6 +1219,7 @@ interface LetterboxProps {
 interface LinkProps {
   href: string;
   accessibilityLabel?: string | undefined;
+  dataTestId?: string | undefined;
   children?: Node | undefined;
   display?: 'inline' | 'inlineBlock' | 'block' | undefined;
   externalLinkIcon?:
@@ -1238,15 +1316,25 @@ interface ModalProps {
   subHeading?: string | undefined;
 }
 
-interface ModalAlertActionDataType {
+interface ModalAlertButtonActionDataType {
   accessibilityLabel: string;
-  label: string;
   dataTestId?: string | undefined;
   disabled?: boolean | undefined;
-  href?: string | undefined;
+  href: string | undefined;
+  label: string;
   onClick?: ButtonEventHandlerType | undefined;
   rel?: RelType | undefined;
+  role: 'link';
   target?: TargetType | undefined;
+}
+
+interface ModalAlertLinkActionDataType {
+  accessibilityLabel: string;
+  dataTestId?: string | undefined;
+  disabled?: boolean | undefined;
+  label: string;
+  onClick?: ButtonLinkEventHandlerType | undefined;
+  role?: 'button';
 }
 
 interface ModalAlertProps {
@@ -1254,9 +1342,9 @@ interface ModalAlertProps {
   children: Node;
   heading: string;
   onDismiss: () => void;
-  primaryAction: ModalAlertActionDataType;
+  primaryAction: ModalAlertButtonActionDataType | ModalAlertLinkActionDataType;
   accessibilityDismissButtonLabel?: string | undefined;
-  secondaryAction?: ModalAlertActionDataType | undefined;
+  secondaryAction?: ModalAlertButtonActionDataType | ModalAlertLinkActionDataType | undefined;
   type?: 'default' | 'warning' | 'error' | undefined;
 }
 
@@ -1281,7 +1369,7 @@ interface ModuleExpandableProps {
     children?: Node | undefined;
     icon?: Icons | undefined;
     iconAccessibilityLabel?: string | undefined;
-    iconButton?: React.ReactElement<typeof IconButton> | undefined;
+    iconButton?: React.ReactElement<typeof IconButton | typeof IconButtonLink> | undefined;
     summary?: ReadonlyArray<string> | undefined;
     type?: 'info' | 'error' | undefined;
   }>;
@@ -1402,7 +1490,9 @@ interface PageHeaderProps {
         accessibilityLabel: string | undefined;
         accessibilityControls: string | undefined;
         accessibilityExpanded: boolean | undefined;
-        onClick: ButtonEventHandlerType;
+        onClick: AbstractEventHandler<
+          React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>
+        >;
       }
     | undefined;
   helperLink?: {
@@ -1474,11 +1564,18 @@ interface PopoverEducationalProps {
   primaryAction?:
     | {
         accessibilityLabel?: string | undefined;
-        href?: string | undefined;
-        text: string | undefined;
         onClick?: ButtonEventHandlerType | undefined;
+        role?: 'button';
+        text: string | undefined;
+      }
+    | {
+        accessibilityLabel?: string | undefined;
+        href: string | undefined;
+        onClick?: ButtonLinkEventHandlerType | undefined;
         rel?: RelType | undefined;
+        role: 'link';
         target?: TargetType | undefined;
+        text: string | undefined;
       }
     | undefined;
   role?: 'dialog' | 'tooltip' | undefined;
@@ -1585,7 +1682,7 @@ interface SelectListGroupProps {
 
 type PrimaryActionType = {
   icon?: 'ellipsis' | 'edit' | 'trash-can';
-  onClick?: ButtonEventHandlerType | undefined;
+  onClick?: BareButtonEventHandlerType | undefined;
   tooltip: {
     accessibilityLabel?: string | undefined;
     text: string;
@@ -1678,7 +1775,12 @@ interface SideNavigationTopItemProps {
   counter?: { number: string; accessibilityLabel: string } | undefined;
   icon?: Icons | { __path: string } | undefined;
   notificationAccessibilityLabel?: string | undefined;
-  onClick?: ButtonEventHandlerType | undefined;
+  onClick?:
+    | AbstractEventHandler<
+        React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent<HTMLAnchorElement>,
+        { dangerouslyDisableOnNavigation?: (() => void) | undefined }
+      >
+    | undefined;
   primaryAction?: PrimaryActionType | undefined;
   ref?: HTMLLIElement;
 }
@@ -1688,7 +1790,11 @@ interface SideNavigationNestedItemProps {
   label: string;
   active?: 'page' | 'section' | undefined;
   counter?: { number: string; accessibilityLabel: string } | undefined;
-  onClick?: ButtonEventHandlerType | undefined;
+  onClick?:
+    | AbstractEventHandler<
+        React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>
+      >
+    | undefined;
   ref?: HTMLLIElement;
 }
 
@@ -1736,19 +1842,29 @@ interface SlimBannerProps {
         accessibilityLabel: string;
         label: string;
         disabled?: boolean | undefined;
-        href?: string | undefined;
+        href: string | undefined;
         onClick?:
           | AbstractEventHandler<
-              | React.MouseEvent<HTMLButtonElement>
-              | React.MouseEvent<HTMLAnchorElement>
-              | React.MouseEvent<HTMLAnchorElement>
-              | React.MouseEvent<HTMLButtonElement>,
+              React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent<HTMLAnchorElement>,
               {
                 rel?: RelType | undefined;
                 target?: TargetType | undefined;
               }
             >
           | undefined;
+        role: 'link';
+      }
+    | {
+        accessibilityLabel: string;
+        label: string;
+        disabled?: boolean | undefined;
+        href?: string | undefined;
+        onClick:
+          | AbstractEventHandler<
+              React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>
+            >
+          | undefined;
+        role?: 'button';
       }
     | undefined;
   type?:
@@ -1846,9 +1962,7 @@ interface TableHeaderCellProps {
 interface TableSortableHeaderCellProps {
   align?: 'start' | 'end';
   children: Node;
-  onSortChange: AbstractEventHandler<
-    React.MouseEvent<HTMLTableCellElement> | React.KeyboardEvent<HTMLTableCellElement>
-  >;
+  onSortChange: TapAreaEventHandlerType;
   sortOrder: 'asc' | 'desc';
   status: 'active' | 'inactive';
   scope?: 'col' | 'row' | 'colgroup' | 'rowgroup' | undefined;
@@ -1867,11 +1981,14 @@ interface TableRowExpandableProps {
   accessibilityExpandLabel: string;
   children: Node;
   expandedContents: Node;
-  expanded?: string | undefined;
-  hoverStyle?: 'gray' | 'none' | undefined;
   id: string;
-  onExpand?: BareButtonEventHandlerType | undefined;
-  selected?: 'selected' | 'unselected' | undefined;
+  expanded?: boolean;
+  hoverStyle?: 'gray' | 'none';
+  onExpand?: AbstractEventHandler<
+    React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>,
+    { expanded: boolean }
+  >;
+  selected?: 'selected' | 'unselected';
 }
 
 interface TableRowDrawerProps {
@@ -1885,10 +2002,7 @@ interface TableRowDrawerProps {
 interface TabsProps {
   activeTabIndex: number;
   onChange: AbstractEventHandler<
-    | React.MouseEvent<HTMLDivElement>
-    | React.KeyboardEvent<HTMLDivElement>
-    | React.MouseEvent<HTMLAnchorElement>
-    | React.KeyboardEvent<HTMLAnchorElement>,
+    React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent<HTMLAnchorElement>,
     { activeTabIndex: number; dangerouslydangerouslyDisableOnNavigation?: (() => void) | undefined }
   >;
   tabs: ReadonlyArray<{
@@ -1930,12 +2044,16 @@ interface TagDataProps {
   size?: 'sm' | 'md' | 'lg';
   showCheckbox?: boolean;
   text: string;
-  tooltip?: TooltipProps;
+  tooltip?: ExtendedTooltipProps;
 }
 
-interface CommonTapAreaProps {
+interface TapAreaProps {
   accessibilityLabel?: string | undefined;
-  children: Node;
+  accessibilityChecked?: boolean | undefined;
+  accessibilityControls?: string | undefined;
+  accessibilityExpanded?: boolean | undefined;
+  accessibilityHaspopup?: boolean | undefined;
+  children?: Node;
   dataTestId?: string;
   disabled?: boolean | undefined;
   fullHeight?: boolean | undefined;
@@ -1971,35 +2089,9 @@ interface CommonTapAreaProps {
   rounding?: RoundingType | undefined;
   tabIndex?: -1 | 0 | undefined;
   tapStyle?: 'none' | 'compress' | undefined;
-}
-
-interface TapAreaLinkProps extends CommonTapAreaProps {
-  role: 'link';
-  href: string;
-  rel?: RelType | undefined;
-  target?: TargetType | undefined;
-  accessibilityCurrent?:
-    | 'page'
-    | 'step'
-    | 'location'
-    | 'date'
-    | 'time'
-    | 'true'
-    | 'false'
-    | 'section';
-}
-
-interface TapAreaButtonProps extends CommonTapAreaProps {
   role?: 'button' | 'switch' | undefined;
-  accessibilityChecked?: boolean | undefined;
-  accessibilityControls?: string | undefined;
-  accessibilityExpanded?: boolean | undefined;
-  accessibilityHaspopup?: boolean | undefined;
 }
-
-type TapAreaProps = TapAreaLinkProps | TapAreaButtonProps;
-
-interface TapAreaLinkCmpProps {
+interface TapAreaLinkProps {
   accessibilityCurrent?:
     | 'page'
     | 'step'
@@ -2033,12 +2125,7 @@ interface TapAreaLinkCmpProps {
   onMouseUp?: AbstractEventHandler<React.MouseEvent<HTMLAnchorElement>> | undefined;
   onMouseEnter?: AbstractEventHandler<React.MouseEvent<HTMLAnchorElement>> | undefined;
   onMouseLeave?: AbstractEventHandler<React.MouseEvent<HTMLAnchorElement>> | undefined;
-  onTap?:
-    | AbstractEventHandler<
-        React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent<HTMLAnchorElement>,
-        { dangerouslydangerouslyDisableOnNavigation?: (() => void) | undefined }
-      >
-    | undefined;
+  onTap?: TapAreaLinkEventHandlerType | undefined;
   rel?: RelType | undefined;
   rounding?: RoundingType | undefined;
   tabIndex?: -1 | 0 | undefined;
@@ -2137,7 +2224,7 @@ interface TileDataProps {
   selected?: boolean | undefined;
   showCheckbox?: boolean | undefined;
   title: string;
-  tooltip?: TooltipProps | undefined;
+  tooltip?: ExtendedTooltipProps | undefined;
   trend?: TrendObject | undefined;
   trendSentiment?: 'good' | 'bad' | 'neutral' | 'auto' | undefined;
   value: string;
@@ -2145,7 +2232,7 @@ interface TileDataProps {
 
 interface ToastProps {
   text: string | React.ReactElement<typeof Text>;
-  dissmissButton:
+  dismissButton:
     | {
         accessibilityLabel?: string | undefined;
         onDismiss: () => void;
@@ -2162,15 +2249,24 @@ interface ToastProps {
         >;
       }
     | undefined;
-  primaryAction?: {
-    accessibilityLabel: string;
-    label: string;
-    href?: string | undefined;
-    onClick?: ButtonEventHandlerType | undefined;
-    rel?: RelType | undefined;
-    size?: 'sm' | 'md' | 'lg' | undefined;
-    target?: TargetType | undefined;
-  };
+  primaryAction?:
+    | {
+        accessibilityLabel: string;
+        label: string;
+        href: string | undefined;
+        onClick?: ButtonEventHandlerType | undefined;
+        rel?: RelType | undefined;
+        role: 'link';
+        size?: 'sm' | 'md' | 'lg' | undefined;
+        target?: TargetType | undefined;
+      }
+    | {
+        accessibilityLabel: string;
+        label: string;
+        onClick: ButtonEventHandlerType | undefined;
+        role?: 'button';
+        size?: 'sm' | 'md' | 'lg' | undefined;
+      };
   thumbnail?:
     | { image: React.ReactElement<typeof Image> }
     | { avatar: React.ReactElement<typeof Avatar> }
@@ -2187,6 +2283,12 @@ interface TooltipProps {
   inline?: boolean | undefined;
   link?: Node | undefined;
   zIndex?: Indexable | undefined;
+}
+
+type TooltipTemp = Omit<TooltipProps, 'text'>;
+
+interface ExtendedTooltipProps extends TooltipTemp {
+  text: string | string[];
 }
 
 interface UpsellProps {
@@ -2210,8 +2312,8 @@ interface UpsellProps {
           | undefined;
       }
     | undefined;
-  primaryAction?: ActionData | undefined;
-  secondaryAction?: ActionData | undefined;
+  primaryAction?: ButtonActionData | LinkActionData | undefined;
+  secondaryAction?: ButtonActionData | LinkActionData | undefined;
   title?: string | undefined;
 }
 
@@ -2237,16 +2339,8 @@ interface VideoProps {
   disableRemotePlayback?: boolean | undefined;
   loop?: boolean | undefined;
   objectFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down' | undefined;
-  onControlsPause?:
-    | AbstractEventHandler<
-        React.SyntheticEvent<HTMLDivElement> | React.SyntheticEvent<HTMLAnchorElement>
-      >
-    | undefined;
-  onControlsPlay?:
-    | AbstractEventHandler<
-        React.SyntheticEvent<HTMLDivElement> | React.SyntheticEvent<HTMLAnchorElement>
-      >
-    | undefined;
+  onControlsPause?: AbstractEventHandler<React.SyntheticEvent<HTMLDivElement>> | undefined;
+  onControlsPlay?: AbstractEventHandler<React.SyntheticEvent<HTMLDivElement>> | undefined;
   onDurationChange?:
     | AbstractEventHandler<React.SyntheticEvent<HTMLVideoElement>, { duration: number }>
     | undefined;
@@ -2447,12 +2541,12 @@ export const Icon: React.FunctionComponent<IconProps>;
 /**
  * https://gestalt.pinterest.systems/web/iconbutton
  */
-export const IconButton: ReactForwardRef<HTMLButtonElement | HTMLAnchorElement, IconButtonProps>;
+export const IconButton: ReactForwardRef<HTMLButtonElement, IconButtonProps>;
 
 /**
  * https://gestalt.pinterest.systems/web/iconbuttonlink
  */
-export const IconButtonLink: ReactForwardRef<HTMLAnchorElement, IconButtonLinkCmpProps>;
+export const IconButtonLink: ReactForwardRef<HTMLAnchorElement, IconButtonLinkProps>;
 
 /**
  * https://gestalt.pinterest.systems/web/iconbuttonfloating
@@ -2744,12 +2838,12 @@ export const TagData: React.FunctionComponent<TagDataProps>;
 /**
  * https://gestalt.pinterest.systems/web/taparea
  */
-export const TapArea: ReactForwardRef<HTMLButtonElement | HTMLAnchorElement, TapAreaProps>;
+export const TapArea: ReactForwardRef<HTMLButtonElement, TapAreaProps>;
 
 /**
  * https://gestalt.pinterest.systems/web/taparealink
  */
-export const TapAreaLink: ReactForwardRef<HTMLAnchorElement, TapAreaLinkCmpProps>;
+export const TapAreaLink: ReactForwardRef<HTMLAnchorElement, TapAreaLinkProps>;
 
 /**
  * https://gestalt.pinterest.systems/web/text
