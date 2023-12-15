@@ -4,6 +4,7 @@ import { FloatingPortal } from '@floating-ui/react';
 import Contents, { type Role } from './Contents';
 import OutsideEventBehavior from '../behaviors/OutsideEventBehavior';
 import { ESCAPE } from '../keyCodes';
+import { type Indexable } from '../zIndex';
 
 const SIZE_WIDTH_MAP = {
   xs: 180,
@@ -32,6 +33,7 @@ type Props = {
   scrollBoundary?: HTMLElement,
   hideWhenReferenceHidden?: boolean,
   onPositioned?: () => void,
+  zIndex?: Indexable,
 };
 
 export default function Controller({
@@ -53,6 +55,7 @@ export default function Controller({
   scrollBoundary,
   hideWhenReferenceHidden,
   onPositioned,
+  zIndex,
 }: Props): ReactNode {
   const width = typeof size === 'string' ? SIZE_WIDTH_MAP[size] : size;
 
@@ -87,6 +90,7 @@ export default function Controller({
         scrollBoundary={scrollBoundary}
         hideWhenReferenceHidden={hideWhenReferenceHidden}
         onPositioned={onPositioned}
+        zIndex={zIndex}
       >
         {children}
       </Contents>

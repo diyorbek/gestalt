@@ -9,6 +9,7 @@ import colors from '../Colors.css';
 import styles from '../Contents.css';
 import { type MainDirections } from '../utils/positioningTypes';
 import { CARET_HEIGHT, CARET_WIDTH } from '../utils/positioningUtils';
+import { type Indexable } from '../zIndex';
 
 export type Role = 'dialog' | 'listbox' | 'menu' | 'tooltip';
 
@@ -29,6 +30,7 @@ type Props = {
   scrollBoundary?: HTMLElement,
   hideWhenReferenceHidden?: boolean,
   onPositioned?: () => void,
+  zIndex?: Indexable,
 };
 
 export default function Contents({
@@ -48,9 +50,11 @@ export default function Contents({
   scrollBoundary,
   hideWhenReferenceHidden = true,
   onPositioned,
+  zIndex: zIndexIndexable,
 }: Props): ReactNode {
   const caretRef = useRef<HTMLElement | null>(null);
   const idealPlacement = idealDirection ? DIRECTIONS_MAP[idealDirection] : 'top';
+  const zIndex = zIndexIndexable?.index();
 
   const { refs, placement, floatingStyles, middlewareData, context, isPositioned } = usePopover({
     anchor,
@@ -91,7 +95,7 @@ export default function Contents({
           styles.maxDimensions,
           width !== null && styles.minDimensions,
         )}
-        style={{ ...floatingStyles, visibility }}
+        style={{ ...floatingStyles, visibility, zIndex }}
       >
         {caret && (
           <div
