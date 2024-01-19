@@ -316,7 +316,7 @@ export default function Dropdown({
     </InternalPopover>
   );
 
-  return isWithinFixedContainer ? dropdown : <Layer zIndex={zIndex}>{dropdown}</Layer>;
+  return isWithinFixedContainer ? dropdown : <Layer>{dropdown}</Layer>;
 }
 
 Dropdown.Item = DropdownItem;
