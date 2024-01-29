@@ -4,6 +4,7 @@ import Contents, { Role } from './Contents';
 import OutsideEventBehavior from '../behaviors/OutsideEventBehavior';
 import { Overflow } from '../boxTypes';
 import { ESCAPE } from '../keyCodes';
+import Layer from '../Layer';
 
 const SIZE_WIDTH_MAP = {
   xs: 180,
@@ -51,7 +52,6 @@ export default function Controller({
   size = 'sm',
   onDismiss,
   onKeyDown,
-  disablePortal,
   scrollBoundary,
   hideWhenReferenceHidden,
   onPositioned,
@@ -73,31 +73,31 @@ export default function Controller({
     }
   };
 
-  const contents = (
-    <OutsideEventBehavior onClick={handlePageClick}>
-      <Contents
-        accessibilityLabel={accessibilityLabel}
-        anchor={anchor}
-        bgColor={bgColor}
-        border={border}
-        caret={caret}
-        hideWhenReferenceHidden={hideWhenReferenceHidden}
-        id={id}
-        idealDirection={idealDirection}
-        onKeyDown={handleKeyDown}
-        onPositioned={onPositioned}
-        overflow={overflow}
-        role={role}
-        rounding={rounding}
-        scrollBoundary={scrollBoundary}
-        shouldFocus={shouldFocus}
-        shouldTrapFocus={shouldTrapFocus}
-        width={width}
-      >
-        {children}
-      </Contents>
-    </OutsideEventBehavior>
+  return (
+    <Layer>
+      <OutsideEventBehavior onClick={handlePageClick}>
+        <Contents
+          accessibilityLabel={accessibilityLabel}
+          anchor={anchor}
+          bgColor={bgColor}
+          border={border}
+          caret={caret}
+          hideWhenReferenceHidden={hideWhenReferenceHidden}
+          id={id}
+          idealDirection={idealDirection}
+          onKeyDown={handleKeyDown}
+          onPositioned={onPositioned}
+          overflow={overflow}
+          role={role}
+          rounding={rounding}
+          scrollBoundary={scrollBoundary}
+          shouldFocus={shouldFocus}
+          shouldTrapFocus={shouldTrapFocus}
+          width={width}
+        >
+          {children}
+        </Contents>
+      </OutsideEventBehavior>
+    </Layer>
   );
-
-  return disablePortal ? contents : <FloatingPortal>{contents}</FloatingPortal>;
 }

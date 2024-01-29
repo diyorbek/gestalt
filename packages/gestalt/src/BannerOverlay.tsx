@@ -162,8 +162,9 @@ export default function BannerOverlay({
   );
 
   const isMessageTextNode = checkTextNode();
+
   return (
-    <Fragment>
+    <Layer>
       <Box display="none" smDisplay="flex">
         <Box
           alignContent="center"
@@ -189,7 +190,6 @@ export default function BannerOverlay({
           rounding={4}
           smPaddingY={4}
           width="calc(100% - 32px)"
-          zIndex={zIndex}
         >
           <Flex alignItems="center" gap={4}>
             {/* @ts-expect-error - TS2339 - Property 'image' does not exist. */}
@@ -326,7 +326,6 @@ export default function BannerOverlay({
           rounding={4}
           smPaddingY={4}
           width="calc(100% - 32px)"
-          zIndex={zIndex}
         >
           <Flex alignItems="center" gap={4}>
             {/* @ts-expect-error - TS2339 - Property 'image' does not exist. */}
@@ -446,7 +445,7 @@ export default function BannerOverlay({
           </Flex>
         </Box>
       </Box>
-    </Fragment>
+    </Layer>
   );
 }
 

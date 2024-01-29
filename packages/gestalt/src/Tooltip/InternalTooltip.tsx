@@ -6,7 +6,6 @@ import Controller from '../Popover/Controller';
 import Text from '../Text';
 import useDebouncedCallback from '../useDebouncedCallback';
 import useInExperiment from '../useInExperiment';
-import { Indexable } from '../zIndex';
 
 const noop = () => {};
 const TIMEOUT = 100;
@@ -66,7 +65,6 @@ type Props = {
   inline?: boolean;
   link?: ReactNode;
   text: string | ReadonlyArray<string>;
-  zIndex?: Indexable;
 };
 
 export default function InternalTooltip({
@@ -77,8 +75,7 @@ export default function InternalTooltip({
   idealDirection,
   inline,
   text,
-  zIndex,
-}: Props) {
+}: Props): ReactNode {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { isOpen } = state;
 

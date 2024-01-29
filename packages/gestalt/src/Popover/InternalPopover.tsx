@@ -25,7 +25,6 @@ type Props = {
   showCaret?: boolean;
   showDismissButton?: boolean;
   size?: Size;
-  disablePortal?: boolean;
   scrollBoundary?: HTMLElement;
   hideWhenReferenceHidden?: boolean;
   onPositioned?: () => void;
@@ -48,7 +47,6 @@ export default function InternalPopover({
   shouldFocus,
   showCaret,
   size = 'sm',
-  disablePortal,
   scrollBoundary,
   hideWhenReferenceHidden,
   onPositioned,
@@ -71,7 +69,6 @@ export default function InternalPopover({
       bgColor={color}
       border
       caret={showCaret}
-      disablePortal={disablePortal}
       hideWhenReferenceHidden={hideWhenReferenceHidden}
       id={id}
       idealDirection={idealDirection}
