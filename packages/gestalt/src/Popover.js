@@ -125,8 +125,9 @@ export default function Popover({
     webExperimentName: 'web_gestalt_popover_v2',
     mwebExperimentName: 'mweb_gestalt_popover_v2',
   });
+  const shouldRenderLegacy = !(__experimentalPopover ?? isInExperiment);
 
-  if (!isInExperiment && !__experimentalPopover) {
+  if (shouldRenderLegacy) {
     return (
       <LegacyInternalPopover
         accessibilityLabel={accessibilityLabel}
