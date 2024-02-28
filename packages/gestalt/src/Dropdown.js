@@ -179,17 +179,15 @@ export default function Dropdown({
   const dropdownChildrenArray = Children.toArray<ReactNode>(children);
   const allowedChildrenOptions = getChildrenOptions(dropdownChildrenArray);
 
-  let selectedElement;
   const setOptionRef = (optionRef: ?HTMLElement) => {
     // Prevent focusing on element until Popover is correctly positioned
     if (isInExperiment && !isPopoverPositioned) return;
 
-    selectedElement = optionRef;
-    const linkElement = selectedElement?.getElementsByTagName('a')[0];
+    const linkElement = optionRef?.getElementsByTagName('a')[0];
     if (linkElement) {
       linkElement.focus();
-    } else if (selectedElement) {
-      selectedElement.focus();
+    } else if (optionRef) {
+      optionRef.focus();
     }
   };
 
@@ -293,7 +291,10 @@ export default function Dropdown({
       shouldFocus={false}
       size="xl"
       __dangerouslySetMaxHeight={maxHeight}
-      __onPositioned={() => setIsPopoverPositioned(true)}
+      __onPositioned={() => {
+        console.log('__onp');
+        setIsPopoverPositioned(true);
+      }}
     >
       <Box
         alignItems="center"

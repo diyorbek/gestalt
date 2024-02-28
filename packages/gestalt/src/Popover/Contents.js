@@ -27,6 +27,9 @@ type Props = {
   width: ?number,
   scrollBoundary?: HTMLElement,
   hideWhenReferenceHidden?: boolean,
+  /**
+   * Callback fired when Popover is correctly positioned after it's mounted.
+   */
   onPositioned?: () => void,
   shouldTrapFocus?: boolean,
 };
@@ -59,24 +62,27 @@ export default function Contents({
     direction: idealPlacement,
     scrollBoundary,
     hideWhenReferenceHidden,
-    onPositioned,
   });
 
-  const caretOffset = middlewareData.arrow;
-  const visibility = middlewareData.hide?.referenceHidden === true ? 'hidden' : 'visible';
-
-  const isCaretVertical = placement === 'top' || placement === 'bottom';
-
   useEffect(() => {
-    if (shouldFocus && refs.floating.current && isPositioned) {
-      refs.floating.current.focus();
+    if (shouldFocus && isPositioned) {
+      refs.floating.current?.focus();
     }
-  }, [isPositioned, refs.floating, shouldFocus]);
+    if (isPositioned) {
+      onPositioned?.();
+    }
+  }, [isPositioned, onPositioned, refs.floating, shouldFocus]);
 
   useEffect(() => {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [onKeyDown]);
+
+  const caretOffset = middlewareData.arrow;
+  const visibility = middlewareData.hide?.referenceHidden === true ? 'hidden' : 'visible';
+  const isCaretVertical = placement === 'top' || placement === 'bottom';
+
+  console.log({ isPositioned, refs, placement, floatingStyles, middlewareData, context });
 
   return (
     <FloatingFocusManager
