@@ -50,10 +50,6 @@ type Props = {
    */
   positionRelativeToAnchor?: boolean;
   /**
-   * *EXPERIMENTAL*: Disables portalling and Popover will be under the DOM hierarchy of the parent component.
-   */
-  disablePortal?: boolean;
-  /**
    * The underlying ARIA role for Popover. See the [accessibility](https://gestalt.pinterest.systems/web/popover#ARIA-attributes) section for more info.
    */
   role?: Role;
@@ -109,7 +105,6 @@ export default function Popover({
   idealDirection,
   onDismiss,
   positionRelativeToAnchor = true,
-  disablePortal = true,
   color = 'white',
   role = 'dialog',
   shouldFocus = true,
@@ -157,7 +152,6 @@ export default function Popover({
       accessibilityLabel={accessibilityLabel}
       anchor={anchor}
       color={color === 'deprecatedBlue' ? 'blue' : color}
-      disablePortal={disablePortal ?? positionRelativeToAnchor}
       hideWhenReferenceHidden={hideWhenReferenceHidden}
       id={id}
       idealDirection={idealDirection}
