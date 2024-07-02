@@ -1,15 +1,19 @@
-// @flow strict
-import { Fragment, Node, Portal, useEffect, useRef, useState } from 'react';
+import { ReactElement, ReactNode, ReactPortal, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import classNames from 'classnames';
+import { useScrollBoundaryContainer } from './contexts/ScrollBoundaryContainerProvider';
 import styles from './Layer.css';
-import layoutStyles from './Layout.css';
+import { getContainerNode } from './utils/positioningUtils';
+import { Indexable } from './zIndex';
 
 type Props = {
   /**
    *
    */
-  children: Node;
+  children: ReactNode;
+  /**
+   * An object representing the z-index value of the Layer. See the [z-index example](https://gestalt.pinterest.systems/web/layer#zIndex) for more details.
+   */
+  zIndex?: Indexable;
 };
 
 /**
@@ -17,31 +21,71 @@ type Props = {
  *
  * ![Layer](https://raw.githubusercontent.com/pinterest/gestalt/master/docs/graphics/building-blocks/Layer.svg)
  */
-export default function Layer({ children }: Props): Portal | Node {
+export default function Layer({
+  children,
+  zIndex: zIndexIndexable,
+}: Props): ReactPortal | ReactElement {
   const [mounted, setMounted] = useState(false);
-  const element = useRef<HTMLDivElement | null>(null);
+  const portalContainer = useRef<HTMLDivElement | null | undefined>(null);
+  const zIndex = zIndexIndexable?.index();
+
+  // If ScrollBoundaryContainer is parent of Layer, useScrollBoundaryContainer provides access to
+  // the  ScrollBoundaryContainer node ref.
+  const { scrollBoundaryContainerRef } = useScrollBoundaryContainer();
+
+  // initialPositionRef is a temporary-placed DOM Node from which to traverse up to find
+  // any ScrollBoundaryContainer parent. After mounting, it's replaced with a portal.
+  const initialPositionRef = useRef<HTMLDivElement | null | undefined>(null);
 
   useEffect(() => {
+    // After the initial mount, useEffect gets called
     setMounted(true);
 
-    const container = document.createElement('div');
-    container.setAttribute('class', classNames(styles.layer, layoutStyles.isolate));
+    // containerNode stores the ScrollBoundaryContainer node to use
+    // as container in the portal -createPortal(child, container)-.
+    const containerNode = getContainerNode({
+      scrollBoundaryContainerRef,
+      initialPositionRef: initialPositionRef?.current,
+    });
 
-    element.current = container;
-    document?.body?.appendChild(element.current);
+    if (typeof document !== 'undefined' && document.createElement) {
+      portalContainer.current = document.createElement('div');
+    }
+
+    if (portalContainer.current) {
+      portalContainer.current.style.zIndex = zIndex === undefined ? '' : zIndex.toString();
+      portalContainer.current.className = zIndex === undefined ? '' : styles.layer;
+
+      if (containerNode) {
+        // If containerNode is found, append the portal to it
+        containerNode.appendChild(portalContainer.current);
+      } else if (typeof document !== 'undefined' && document.body) {
+        // If not, append the portal to document.body
+        document.body.appendChild(portalContainer.current);
+      }
+    }
 
     return () => {
-      if (element.current) {
-        document?.body?.removeChild(element.current);
+      if (portalContainer.current) {
+        if (containerNode) {
+          containerNode.removeChild(portalContainer.current);
+        } else if (typeof document !== 'undefined' && document.body) {
+          document.body.removeChild(portalContainer.current);
+        }
       }
     };
-  }, []);
+  }, [zIndex, scrollBoundaryContainerRef]);
 
-  if (!mounted || !element.current) {
-    return null;
+  if (!mounted || !portalContainer.current) {
+    // The initial render will be this temporary div
+    // to capture the initial position of the DOM node in the DOM tree
+    // @ts-expect-error - TS2322 - Type 'MutableRefObject<HTMLDivElement | null | undefined>' is not assignable to type 'LegacyRef<HTMLDivElement> | undefined'.
+    return <div ref={initialPositionRef} />;
   }
 
-  return <Fragment>{createPortal(children, element.current)}</Fragment>;
+  // After useEffect, we render the children into the portal container node outside the DOM hierarchy
+  // @ts-expect-error - TS2322 - Type 'ReactPortal' is not assignable to type 'ReactNode'.
+  return createPortal(children, portalContainer.current);
 }
 
 Layer.displayName = 'Layer';
