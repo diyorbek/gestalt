@@ -8,7 +8,6 @@ import Icon from '../Icon';
 import TapArea from '../TapArea';
 import Text from '../Text';
 import Tooltip from '../Tooltip';
-import { Indexable } from '../zIndex';
 
 type BadgeObject = {
   text: string;
@@ -55,7 +54,6 @@ type Props = {
   tooltipText?: string;
   trend?: TrendObject;
   trendSentiment?: 'good' | 'bad' | 'neutral' | 'auto';
-  tooltipZIndex?: Indexable;
   value: string;
 };
 
@@ -89,7 +87,6 @@ export default function InternalDatapoint({
   size = 'md',
   title,
   tooltipText,
-  tooltipZIndex,
   trend,
   trendSentiment = 'auto',
   value,
@@ -109,12 +106,7 @@ export default function InternalDatapoint({
           </Text>
         </MaybeMinWidth>
         {tooltipText && (
-          <Tooltip
-            accessibilityLabel=""
-            idealDirection="up"
-            text={tooltipText}
-            zIndex={tooltipZIndex}
-          >
+          <Tooltip accessibilityLabel="" idealDirection="up" text={tooltipText}>
             {/* Interactive elements require an a11yLabel on them or their children.
             That's why we set`accessibilityLabel` on `TapArea` instead of `Tooltip` */}
             <TapArea accessibilityLabel={tooltipText} rounding="circle" tapStyle="none">

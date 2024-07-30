@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import InternalTooltip from './Tooltip/InternalTooltip';
-import { Indexable } from './zIndex';
 
 type Props = {
   /**
@@ -27,10 +26,6 @@ type Props = {
    * The text shown in Tooltip to describe its anchor element. See [localization ](https://gestalt.pinterest.systems/web/tooltip#Localization) to learn more.
    */
   text: string;
-  /**
-   * Specifies the stacking order of Tooltip along the z-axis in the current stacking context. See the [z-index](https://gestalt.pinterest.systems/web/tooltip#Z-index) variant to learn more.
-   */
-  zIndex?: Indexable;
 };
 
 /**
@@ -48,7 +43,6 @@ export default function Tooltip({
   idealDirection = 'down',
   inline,
   text,
-  zIndex,
 }: Props) {
   return (
     <InternalTooltip
@@ -57,7 +51,6 @@ export default function Tooltip({
       inline={inline}
       link={link}
       text={text}
-      zIndex={zIndex}
     >
       {children}
     </InternalTooltip>

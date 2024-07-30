@@ -1,6 +1,13 @@
 import { Fragment, ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, DeviceTypeProvider, Divider, FixedZIndex, Flex } from 'gestalt';
+import {
+  Box,
+  DeviceTypeProvider,
+  Divider,
+  FixedZIndex,
+  Flex,
+  StackingContextProvider,
+} from 'gestalt';
 import {
   TOKEN_COLOR_GRAY_ROBOFLOW_700,
   TOKEN_COLOR_ORANGE_FIRETINI_0,
@@ -182,5 +189,5 @@ export default function AppLayout({ children, colorScheme }: Props) {
     );
   }
 
-  return pageContent;
+  return <StackingContextProvider labels={[]}>{pageContent}</StackingContextProvider>;
 }

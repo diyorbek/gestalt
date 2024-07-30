@@ -6,13 +6,11 @@ import Flex from './Flex';
 import styles from './HelpButton.css';
 import Icon from './Icon';
 import { ESCAPE, TAB } from './keyCodes';
-import Layer from './Layer';
 import Link from './Link';
 import InternalPopover from './Popover/InternalPopover';
 import TapArea from './TapArea';
 import Text from './Text';
 import Tooltip from './Tooltip';
-import { CompositeZIndex, FixedZIndex, Indexable } from './zIndex';
 
 type LinkType = {
   accessibilityLabel?: string;
@@ -51,10 +49,6 @@ type Props = {
    */
   idealDirection?: 'up' | 'right' | 'down' | 'left';
   /**
-   * Enables correct behavior when HelpButton is used within a fixed container. To achieve this it removes the Layer component around Popover and enables positioning relative to its anchor element. Should only be used in cases where Layer breaks the HelpButton positionings such as when the anchor element is within a sticky component.
-   */
-  isWithinFixedContainer?: boolean;
-  /**
    * If provided, displays a [link api](https://gestalt.pinterest.systems/web/link#Props) at the bottom of the popover message.
    * - `href` is the URL that the hyperlink points to.
    * - `text` is the displayed text for the link. See the [link variant](https://gestalt.pinterest.systems/web/helpbutton#With-a-link) for more details.
@@ -71,10 +65,6 @@ type Props = {
    * Informational content that's displayed when the user clicks on HelpButton.
    */
   text: string | ReactElement;
-  /**
-   * Specifies the z-index for HelpButton's tooltip and popover to resolve any layering issues with other elements. See the [zIndex variant](https://gestalt.pinterest.systems/web/helpbutton#With-Z-index) for more details.
-   */
-  zIndex?: Indexable;
 };
 
 /**
@@ -84,11 +74,9 @@ export default function HelpButton({
   accessibilityLabel,
   accessibilityPopoverLabel,
   idealDirection = 'down',
-  isWithinFixedContainer = false,
   link,
   onClick,
   text,
-  zIndex,
 }: Props) {
   const tapAreaRef = useRef<null | HTMLAnchorElement | HTMLDivElement>(null);
   const textRef = useRef<null | HTMLElement>(null);
@@ -153,10 +141,6 @@ export default function HelpButton({
 
   const bgIconColor = open || hovered || focused ? 'selected' : 'tertiary';
 
-  const tooltipZIndex = zIndex ?? new FixedZIndex(1);
-
-  const zIndexWrapper = new CompositeZIndex([tooltipZIndex]);
-
   // Overriding color of `Text` components
   const isDarkMode = colorSchemeName === 'darkMode';
   const textColorOverrideStyles = isDarkMode
@@ -175,7 +159,6 @@ export default function HelpButton({
       accessibilityLabel={accessibilityPopoverLabel}
       anchor={tapAreaRef.current}
       color="white"
-      disablePortal={isWithinFixedContainer}
       hideWhenReferenceHidden
       id={popoverId}
       idealDirection={idealDirection}
@@ -221,12 +204,7 @@ export default function HelpButton({
   return (
     // The only purpose of this Flex is to make zIndex work (Tooltip over Popover).
     <Flex alignItems="center" flex="none" justifyContent="center">
-      <Tooltip
-        accessibilityLabel=""
-        idealDirection={idealDirection}
-        text={tooltipMessage}
-        zIndex={tooltipZIndex}
-      >
+      <Tooltip accessibilityLabel="" idealDirection={idealDirection} text={tooltipMessage}>
         <TapArea
           // @ts-expect-error - TS2322 - Type 'MutableRefObject<HTMLDivElement | HTMLAnchorElement | null>' is not assignable to type 'LegacyRef<HTMLDivElement> | undefined'.
           ref={tapAreaRef}
@@ -256,15 +234,8 @@ export default function HelpButton({
           </Box>
         </TapArea>
       </Tooltip>
-      {open &&
-        (isWithinFixedContainer ? (
-          // This Box is  handling the zIndex work (Tooltip over Popover)
-          <Box data-test-id="zIndexLayer" zIndex={zIndexWrapper}>
-            {popoverElement}
-          </Box>
-        ) : (
-          <Layer zIndex={zIndexWrapper}>{popoverElement}</Layer>
-        ))}
+
+      {open && popoverElement}
     </Flex>
   );
 }

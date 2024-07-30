@@ -1,9 +1,9 @@
 import { ReactElement, ReactNode, ReactPortal, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useScrollBoundaryContainer } from './contexts/ScrollBoundaryContainerProvider';
-import styles from './Layer.css';
+// import styles from './Layer.css';
 import { getContainerNode } from './utils/positioningUtils';
-import { Indexable } from './zIndex';
+// import { Indexable } from './zIndex';
 
 type Props = {
   /**
@@ -13,7 +13,7 @@ type Props = {
   /**
    * An object representing the z-index value of the Layer. See the [z-index example](https://gestalt.pinterest.systems/web/layer#zIndex) for more details.
    */
-  zIndex?: Indexable;
+  // zIndex?: Indexable;
 };
 
 /**
@@ -23,11 +23,11 @@ type Props = {
  */
 export default function Layer({
   children,
-  zIndex: zIndexIndexable,
-}: Props): ReactPortal | ReactElement {
+}: // zIndex: zIndexIndexable,
+Props): ReactPortal | ReactElement {
   const [mounted, setMounted] = useState(false);
   const portalContainer = useRef<HTMLDivElement | null | undefined>(null);
-  const zIndex = zIndexIndexable?.index();
+  // const zIndex = zIndexIndexable?.index();
 
   // If ScrollBoundaryContainer is parent of Layer, useScrollBoundaryContainer provides access to
   // the  ScrollBoundaryContainer node ref.
@@ -53,8 +53,8 @@ export default function Layer({
     }
 
     if (portalContainer.current) {
-      portalContainer.current.style.zIndex = zIndex === undefined ? '' : zIndex.toString();
-      portalContainer.current.className = zIndex === undefined ? '' : styles.layer;
+      // portalContainer.current.style.zIndex = zIndex === undefined ? '' : zIndex.toString();
+      // portalContainer.current.className = zIndex === undefined ? '' : styles.layer;
 
       if (containerNode) {
         // If containerNode is found, append the portal to it
@@ -74,7 +74,7 @@ export default function Layer({
         }
       }
     };
-  }, [zIndex, scrollBoundaryContainerRef]);
+  }, [scrollBoundaryContainerRef]);
 
   if (!mounted || !portalContainer.current) {
     // The initial render will be this temporary div

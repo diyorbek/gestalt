@@ -13,7 +13,6 @@ import Pog from '../Pog';
 import MaybeTooltip from '../sharedSubcomponents/MaybeTooltip';
 import TapArea from '../TapArea';
 import useInteractiveStates from '../utils/useInteractiveStates';
-import { CompositeZIndex, FixedZIndex, Indexable } from '../zIndex';
 
 type Props = {
   icon?: 'ellipsis' | 'edit' | 'trash-can';
@@ -28,7 +27,6 @@ type Props = {
   tooltip: {
     accessibilityLabel?: string;
     text: string;
-    zIndex?: Indexable;
   };
   dropdownItems?: ReadonlyArray<ReactElement>;
 };
@@ -161,18 +159,12 @@ export default function PrimaryActionIconButton({
     }
   }, [selected, forceIconButton, setShowIconButton, setForceIconButton]);
 
-  const tooltipZIndex = tooltip?.zIndex
-    ? new CompositeZIndex([new FixedZIndex(1), tooltip?.zIndex].filter(Boolean))
-    : new FixedZIndex(1);
-  const dropdownZIndex = new CompositeZIndex([tooltipZIndex]);
-
   return (
     <MaybeTooltip
       disabled={open}
       tooltip={{
         text: tooltip.text,
         accessibilityLabel: '',
-        zIndex: tooltipZIndex,
       }}
     >
       <ItemIconButton
@@ -219,7 +211,6 @@ export default function PrimaryActionIconButton({
               setSelected(false);
               setOpen(false);
             }}
-            zIndex={dropdownZIndex}
           >
             {dropdownItems?.map((element, idx) =>
               cloneElement(element, {

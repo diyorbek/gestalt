@@ -31,6 +31,7 @@ type Props = {
   onPositioned?: () => void;
   disableFocusTrap?: boolean;
   overflow?: Extract<Overflow, 'auto' | 'hidden' | 'visible'>;
+  zIndexLabel?: string;
 };
 
 export default function InternalPopover({
@@ -54,6 +55,7 @@ export default function InternalPopover({
   onPositioned,
   disableFocusTrap = false,
   overflow = 'auto',
+  zIndexLabel,
 }: Props) {
   const { accessibilityDismissButtonLabel: accessibilityDismissButtonLabelDefault } =
     useDefaultLabelContext('Popover');
@@ -85,6 +87,7 @@ export default function InternalPopover({
       shouldFocus={shouldFocus}
       shouldTrapFocus={!disableFocusTrap}
       size={size === 'flexible' ? undefined : size}
+      zIndexLabel={zIndexLabel}
     >
       {showDismissButton && (
         <Flex direction="column">

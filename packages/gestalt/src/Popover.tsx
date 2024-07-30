@@ -104,8 +104,8 @@ export default function Popover({
   id,
   idealDirection,
   onDismiss,
-  positionRelativeToAnchor = true,
-  disablePortal = true,
+  positionRelativeToAnchor: _positionRelativeToAnchor,
+  disablePortal: _disablePortal,
   color = 'white',
   role = 'dialog',
   shouldFocus = true,
@@ -122,7 +122,6 @@ export default function Popover({
       accessibilityLabel={accessibilityLabel}
       anchor={anchor}
       color={color === 'deprecatedBlue' ? 'blue' : color}
-      disablePortal={disablePortal ?? positionRelativeToAnchor}
       hideWhenReferenceHidden={hideWhenReferenceHidden}
       id={id}
       idealDirection={idealDirection}

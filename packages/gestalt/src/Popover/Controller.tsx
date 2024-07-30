@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
-import { FloatingPortal } from '@floating-ui/react';
 import Contents, { Role } from './Contents';
 import OutsideEventBehavior from '../behaviors/OutsideEventBehavior';
 import { Overflow } from '../boxTypes';
 import { ESCAPE } from '../keyCodes';
+import Layer from '../Layer';
 
 const SIZE_WIDTH_MAP = {
   xs: 180,
@@ -34,6 +34,7 @@ type Props = {
   onPositioned?: () => void;
   shouldTrapFocus?: boolean;
   overflow?: Extract<Overflow, 'auto' | 'hidden' | 'visible'>;
+  zIndexLabel?: string;
 };
 
 export default function Controller({
@@ -57,6 +58,7 @@ export default function Controller({
   onPositioned,
   shouldTrapFocus,
   overflow,
+  zIndexLabel,
 }: Props) {
   const width = typeof size === 'string' ? SIZE_WIDTH_MAP[size] : size;
 
@@ -93,11 +95,12 @@ export default function Controller({
         shouldFocus={shouldFocus}
         shouldTrapFocus={shouldTrapFocus}
         width={width}
+        zIndexLabel={zIndexLabel}
       >
         {children}
       </Contents>
     </OutsideEventBehavior>
   );
 
-  return disablePortal ? contents : <FloatingPortal>{contents}</FloatingPortal>;
+  return disablePortal ? contents : <Layer>{contents}</Layer>;
 }

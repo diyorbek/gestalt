@@ -7,6 +7,7 @@ import { Overflow } from '../boxTypes';
 import Caret from '../Caret';
 import styles from '../Contents.css';
 import layoutStyles from '../Layout.css';
+import { useZIndexLabel } from '../StackingContextProvider';
 import { MainDirections } from '../utils/positioningTypes';
 import { CARET_HEIGHT, CARET_WIDTH } from '../utils/positioningUtils';
 
@@ -31,6 +32,7 @@ type Props = {
   onPositioned?: () => void;
   shouldTrapFocus?: boolean;
   overflow?: Extract<Overflow, 'auto' | 'hidden' | 'visible'>;
+  zIndexLabel?: string;
 };
 
 export default function Contents({
@@ -52,6 +54,7 @@ export default function Contents({
   onPositioned,
   shouldTrapFocus,
   overflow,
+  zIndexLabel,
 }: Props) {
   const caretRef = useRef<HTMLElement | null>(null);
   const idealPlacement = idealDirection ? DIRECTIONS_MAP[idealDirection] : 'top';
@@ -84,6 +87,8 @@ export default function Contents({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [onKeyDown]);
 
+  const zIndex = useZIndexLabel(zIndexLabel);
+
   return (
     <FloatingFocusManager
       context={context}
@@ -107,6 +112,7 @@ export default function Contents({
           ...floatingStyles,
           visibility: isAnchorInViewport ? 'hidden' : 'visible',
           outline: 'none', // inlined to aviod overrides by non-Gestalt CSS
+          zIndex,
         }}
         tabIndex={-1}
       >

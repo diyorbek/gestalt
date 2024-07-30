@@ -16,7 +16,8 @@ import { forwardRef, ReactElement, ReactNode } from 'react';
 import styles from './Box.css';
 import { buildStyles } from './boxTransforms';
 import { As } from './boxTypes';
-import { Indexable } from './zIndex';
+import { useZIndexLabel } from './StackingContextProvider';
+import { FixedZIndex, Indexable } from './zIndex';
 
 /*
 
@@ -516,6 +517,10 @@ type Props = BoxPassthroughProps & {
    * An object representing the zIndex value of the Box. See the [Z-Index](https://gestalt.pinterest.systems/web/box#Z-Index) variant for more info.
    */
   zIndex?: Indexable;
+  /**
+   * A label mapped to the zIndex value of the Box.
+   */
+  zIndexLabel?: string;
 };
 
 // --
@@ -545,6 +550,7 @@ const disallowedProps = [
   'smMarginRight',
   'mdMarginRight',
   'lgMarginRight',
+  'zIndexLabel',
 ];
 
 /**
@@ -558,9 +564,12 @@ const BoxWithForwardRef = forwardRef<HTMLElement, Props>(function Box(
   { as, ...props }: Props,
   ref,
 ): ReactElement {
+  const zIndexLabel = useZIndexLabel(props.zIndexLabel);
+  const zIndex = zIndexLabel ? new FixedZIndex(zIndexLabel) : props.zIndex;
+
   const { passthroughProps, propsStyles } = buildStyles<Omit<Props, 'as'>>({
     baseStyles: styles.box,
-    props,
+    props: { ...props, zIndex },
     blocklistProps: disallowedProps,
   });
 

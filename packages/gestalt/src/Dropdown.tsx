@@ -8,7 +8,6 @@ import DropdownItem from './DropdownItem';
 import DropdownLink from './DropdownLink';
 import DropdownSection from './DropdownSection';
 import { DOWN_ARROW, ENTER, ESCAPE, SPACE, TAB, UP_ARROW } from './keyCodes';
-import Layer from './Layer';
 import InternalPopover from './Popover/InternalPopover';
 import PartialPage from './SheetMobile/PartialPage';
 import { DirectionOptionType } from './utils/keyboardNavigation';
@@ -110,10 +109,6 @@ type Props = {
    */
   children: ReactNode;
   /**
-   * Enables correct behavior when Dropdown is used within a fixed container. To achieve this it removes the Layer component around Popover and enables positioning relative to its anchor element. Should only be used in cases where Layer breaks the Dropdown positionings such as when the anchor element is within a sticky component.
-   */
-  isWithinFixedContainer?: boolean;
-  /**
    * Content to display at the top of the Dropdown before any items or sections. See the [Custom header](https://gestalt.pinterest.systems/web/dropdown#Custom-header) variant to learn more.
    */
   headerContent?: ReactNode;
@@ -157,12 +152,11 @@ type Props = {
 export default function Dropdown({
   anchor,
   children,
-  isWithinFixedContainer = false,
   headerContent,
   id,
   idealDirection = 'down',
   onDismiss,
-  zIndex,
+  zIndex: _zIndex,
   maxHeight,
   mobileOnAnimationEnd,
   disableMobileUI = false,
@@ -280,12 +274,11 @@ export default function Dropdown({
     );
   }
 
-  const dropdown = (
+  return (
     <InternalPopover
       accessibilityLabel="Dropdown"
       anchor={anchor}
       color="white"
-      disablePortal
       hideWhenReferenceHidden
       id={id}
       idealDirection={idealDirection}
@@ -315,8 +308,6 @@ export default function Dropdown({
       </Box>
     </InternalPopover>
   );
-
-  return isWithinFixedContainer ? dropdown : <Layer zIndex={zIndex}>{dropdown}</Layer>;
 }
 
 Dropdown.Item = DropdownItem;

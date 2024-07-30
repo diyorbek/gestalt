@@ -58,7 +58,6 @@ type Props = {
   showDismissButton?: boolean;
   size: 'default' | 'full' | 'auto';
   subHeading?: string;
-  zIndex?: Indexable;
 };
 
 export default function PartialPage({
@@ -79,7 +78,6 @@ export default function PartialPage({
   showDismissButton,
   size,
   subHeading,
-  zIndex,
 }: Props) {
   const id = useId();
 

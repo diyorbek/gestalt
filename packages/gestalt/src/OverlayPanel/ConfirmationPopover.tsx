@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { useRequestAnimationFrame } from '../animation/RequestAnimationFrameContext';
-import TrapFocusBehavior from '../behaviors/TrapFocusBehavior';
 import Box from '../Box';
 import Button from '../Button';
 import { useDefaultLabelContext } from '../contexts/DefaultLabelProvider';
@@ -82,7 +81,6 @@ export default function ConfirmationPopover({
       accessibilityLabel="Popover"
       anchor={anchor}
       color="white"
-      disablePortal
       idealDirection="down"
       onDismiss={() => onDismiss()}
       role="dialog"
@@ -90,44 +88,42 @@ export default function ConfirmationPopover({
       showCaret={false}
       size="md"
     >
-      <TrapFocusBehavior>
-        <Box padding={3} width="100%">
-          <Flex direction="column" gap={4}>
-            <Box role="alert">
-              <Flex alignItems="center" direction="column" gap={2} width="100%">
-                <Text weight="bold">{message ?? messageDefault}</Text>
-                <Text>{subtext ?? subtextDefault}</Text>
-              </Flex>
-            </Box>
-            <Flex gap={2} justifyContent="center">
-              <Button
-                accessibilityLabel={
-                  secondaryAction?.accessibilityLabel ?? secondaryActionTextLabelDefault
-                }
-                color="gray"
-                onClick={({ event }) => {
-                  secondaryAction?.onClick?.({ event });
-                  onDismiss();
-                }}
-                text={secondaryAction?.text ?? secondaryActionTextDefault}
-              />
-              <Button
-                // @ts-expect-error - TS2322 - Type 'MutableRefObject<HTMLAnchorElement | HTMLButtonElement | null>' is not assignable to type 'LegacyRef<HTMLButtonElement> | undefined'.
-                ref={confirmationButtonRef}
-                accessibilityLabel={
-                  primaryAction?.accessibilityLabel ?? primaryActionTextLabelDefault
-                }
-                color="red"
-                onClick={({ event }) => {
-                  primaryAction?.onClick?.({ event });
-                  onExternalDismiss();
-                }}
-                text={primaryAction?.text ?? primaryActionTextDefault}
-              />
+      <Box padding={3} width="100%">
+        <Flex direction="column" gap={4}>
+          <Box role="alert">
+            <Flex alignItems="center" direction="column" gap={2} width="100%">
+              <Text weight="bold">{message ?? messageDefault}</Text>
+              <Text>{subtext ?? subtextDefault}</Text>
             </Flex>
+          </Box>
+          <Flex gap={2} justifyContent="center">
+            <Button
+              accessibilityLabel={
+                secondaryAction?.accessibilityLabel ?? secondaryActionTextLabelDefault
+              }
+              color="gray"
+              onClick={({ event }) => {
+                secondaryAction?.onClick?.({ event });
+                onDismiss();
+              }}
+              text={secondaryAction?.text ?? secondaryActionTextDefault}
+            />
+            <Button
+              // @ts-expect-error - TS2322 - Type 'MutableRefObject<HTMLAnchorElement | HTMLButtonElement | null>' is not assignable to type 'LegacyRef<HTMLButtonElement> | undefined'.
+              ref={confirmationButtonRef}
+              accessibilityLabel={
+                primaryAction?.accessibilityLabel ?? primaryActionTextLabelDefault
+              }
+              color="red"
+              onClick={({ event }) => {
+                primaryAction?.onClick?.({ event });
+                onExternalDismiss();
+              }}
+              text={primaryAction?.text ?? primaryActionTextDefault}
+            />
           </Flex>
-        </Box>
-      </TrapFocusBehavior>
+        </Flex>
+      </Box>
     </InternalPopover>
   );
 }

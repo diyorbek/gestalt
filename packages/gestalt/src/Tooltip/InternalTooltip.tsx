@@ -1,10 +1,8 @@
 import { Fragment, ReactNode, useEffect, useReducer, useRef } from 'react';
 import Box from '../Box';
-import Layer from '../Layer';
 import Controller from '../Popover/Controller';
 import Text from '../Text';
 import useDebouncedCallback from '../useDebouncedCallback';
-import { Indexable } from '../zIndex';
 
 const noop = () => {};
 const TIMEOUT = 100;
@@ -64,7 +62,6 @@ type Props = {
   inline?: boolean;
   link?: ReactNode;
   text: string | ReadonlyArray<string>;
-  zIndex?: Indexable;
 };
 
 export default function InternalTooltip({
@@ -75,7 +72,6 @@ export default function InternalTooltip({
   idealDirection,
   inline,
   text,
-  zIndex,
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { isOpen } = state;
@@ -143,37 +139,34 @@ export default function InternalTooltip({
         {children}
       </Box>
       {isOpen && !!anchor && (
-        <Layer zIndex={zIndex}>
-          <Controller
-            anchor={anchor}
-            bgColor="darkGray"
-            border={false}
-            caret={false}
-            disablePortal
-            hideWhenReferenceHidden
-            idealDirection={idealDirection}
-            onDismiss={noop}
-            role="tooltip"
-            rounding={2}
-            shouldFocus={false}
+        <Controller
+          anchor={anchor}
+          bgColor="darkGray"
+          border={false}
+          caret={false}
+          hideWhenReferenceHidden
+          idealDirection={idealDirection}
+          onDismiss={noop}
+          role="tooltip"
+          rounding={2}
+          shouldFocus={false}
+        >
+          <Box
+            maxWidth={180}
+            onBlur={link ? handleTextMouseLeave : undefined}
+            onFocus={link ? handleTextMouseEnter : undefined}
+            onMouseEnter={link ? handleTextMouseEnter : undefined}
+            onMouseLeave={link ? handleTextMouseLeave : undefined}
+            padding={2}
+            tabIndex={0}
           >
-            <Box
-              maxWidth={180}
-              onBlur={link ? handleTextMouseLeave : undefined}
-              onFocus={link ? handleTextMouseEnter : undefined}
-              onMouseEnter={link ? handleTextMouseEnter : undefined}
-              onMouseLeave={link ? handleTextMouseLeave : undefined}
-              padding={2}
-              tabIndex={0}
-            >
-              <Text color="inverse" size="100">
-                {getTooltipText()}
-              </Text>
+            <Text color="inverse" size="100">
+              {getTooltipText()}
+            </Text>
 
-              {Boolean(link) && <Box marginTop={1}>{link}</Box>}
-            </Box>
-          </Controller>
-        </Layer>
+            {Boolean(link) && <Box marginTop={1}>{link}</Box>}
+          </Box>
+        </Controller>
       )}
     </Box>
   );

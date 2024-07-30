@@ -113,6 +113,10 @@ type Props = {
    * An object representing the zIndex value of PopoverEducational. Learn more about [zIndex classes](https://gestalt.pinterest.systems/web/zindex_classes)
    */
   zIndex?: Indexable;
+  /**
+   * A label mapped to the zIndex value of the Box.
+   */
+  zIndexLabel?: string;
 };
 
 /**
@@ -132,7 +136,8 @@ export default function PopoverEducational({
   role = 'tooltip',
   shouldFocus = false,
   size = 'sm',
-  zIndex,
+  zIndex: _zIndex,
+  zIndexLabel,
 }: Props) {
   const { colorSchemeName } = useColorScheme();
   const isDarkMode = colorSchemeName === 'darkMode';
@@ -162,7 +167,7 @@ export default function PopoverEducational({
   }
 
   return (
-    <Box position={zIndex ? 'relative' : undefined} zIndex={zIndex}>
+    <Box position={zIndexLabel ? 'relative' : undefined} zIndexLabel={zIndexLabel}>
       <InternalPopover
         accessibilityLabel={accessibilityLabel}
         anchor={anchor}

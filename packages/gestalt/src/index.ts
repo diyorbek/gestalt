@@ -64,6 +64,7 @@ import SelectList from './SelectList';
 import SheetMobile from './SheetMobile';
 import SideNavigation from './SideNavigation';
 import Spinner from './Spinner';
+import StackingContextProvider from './StackingContextProvider';
 import Status from './Status';
 import Sticky from './Sticky';
 import Switch from './Switch';
@@ -153,6 +154,7 @@ export {
   SheetMobile,
   SideNavigation,
   Spinner,
+  StackingContextProvider,
   Status,
   Sticky,
   Switch,

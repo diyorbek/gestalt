@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import AnimationProvider from './animation/AnimationContext';
 import DismissingElement from './animation/DismissingElement';
 import RequestAnimationFrameProvider from './animation/RequestAnimationFrameContext';
+import Layer from './Layer';
 import InternalOverlayPanel from './OverlayPanel/InternalOverlayPanel';
 
 type NodeOrRenderProp = ReactNode | ((arg1: { onDismissStart: () => void }) => ReactNode);
@@ -98,25 +99,27 @@ function OverlayPanel({
   subHeading,
 }: Props) {
   return (
-    <AnimationProvider>
-      <RequestAnimationFrameProvider>
-        <InternalOverlayPanel
-          accessibilityDismissButtonLabel={accessibilityDismissButtonLabel}
-          accessibilityLabel={accessibilityLabel}
-          closeOnOutsideClick={closeOnOutsideClick}
-          dismissConfirmation={dismissConfirmation}
-          footer={footer}
-          heading={heading}
-          // @ts-expect-error - TS2322 - Type '((arg1: { animationState: "in" | "out"; }) => void) | undefined' is not assignable to type '(arg1: { animationState: "in" | "out"; }) => void | null | undefined'.
-          onAnimationEnd={onAnimationEnd}
-          onDismiss={onDismiss}
-          size={size}
-          subHeading={subHeading}
-        >
-          {children}
-        </InternalOverlayPanel>{' '}
-      </RequestAnimationFrameProvider>
-    </AnimationProvider>
+    <Layer>
+      <AnimationProvider>
+        <RequestAnimationFrameProvider>
+          <InternalOverlayPanel
+            accessibilityDismissButtonLabel={accessibilityDismissButtonLabel}
+            accessibilityLabel={accessibilityLabel}
+            closeOnOutsideClick={closeOnOutsideClick}
+            dismissConfirmation={dismissConfirmation}
+            footer={footer}
+            heading={heading}
+            // @ts-expect-error - TS2322 - Type '((arg1: { animationState: "in" | "out"; }) => void) | undefined' is not assignable to type '(arg1: { animationState: "in" | "out"; }) => void | null | undefined'.
+            onAnimationEnd={onAnimationEnd}
+            onDismiss={onDismiss}
+            size={size}
+            subHeading={subHeading}
+          >
+            {children}
+          </InternalOverlayPanel>{' '}
+        </RequestAnimationFrameProvider>
+      </AnimationProvider>
+    </Layer>
   );
 }
 

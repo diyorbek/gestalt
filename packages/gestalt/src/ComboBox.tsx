@@ -16,13 +16,11 @@ import Box from './Box';
 import ComboBoxItem, { ComboBoxItemType } from './ComboBox/Item';
 import { useDefaultLabelContext } from './contexts/DefaultLabelProvider';
 import { DOWN_ARROW, ENTER, ESCAPE, TAB, UP_ARROW } from './keyCodes';
-import Layer from './Layer';
 import InternalPopover from './Popover/InternalPopover';
 import Text from './Text';
 import InternalTextField from './TextField/InternalTextField';
 import InternalTextFieldIconButton from './TextField/InternalTextFieldIconButton';
 import handleContainerScrolling, { DirectionOptionType, KEYS } from './utils/keyboardNavigation';
-import { Indexable } from './zIndex';
 
 type Size = 'sm' | 'md' | 'lg';
 
@@ -132,10 +130,6 @@ type Props = {
    * List of tags to display in the component. See [tags](https://gestalt.pinterest.systems/web/combobox#Tags) variant to learn more.
    */
   tags?: ReadonlyArray<ReactElement>;
-  /**
-   * An object representing the zIndex value of the ComboBox list box. Learn more about [zIndex classes](https://gestalt.pinterest.systems/web/zindex_classes)
-   */
-  zIndex?: Indexable;
 };
 
 /**
@@ -170,7 +164,6 @@ const ComboBoxWithForwardRef = forwardRef<HTMLInputElement, Props>(function Comb
     size = 'md',
     selectedOption,
     tags,
-    zIndex,
   }: Props,
   ref,
 ) {
@@ -490,44 +483,41 @@ const ComboBoxWithForwardRef = forwardRef<HTMLInputElement, Props>(function Comb
         />
       </Box>
       {showOptionsList && innerRef.current ? (
-        <Layer zIndex={zIndex}>
-          <InternalPopover
-            anchor={innerRef.current}
-            color="white"
-            disablePortal
-            hideWhenReferenceHidden
-            idealDirection="down"
-            onDismiss={handleOnDismiss}
-            onKeyDown={handleKeyDown}
-            role="listbox"
-            shouldFocus={false}
-            size="flexible"
+        <InternalPopover
+          anchor={innerRef.current}
+          color="white"
+          hideWhenReferenceHidden
+          idealDirection="down"
+          onDismiss={handleOnDismiss}
+          onKeyDown={handleKeyDown}
+          role="listbox"
+          shouldFocus={false}
+          size="flexible"
+        >
+          <Box
+            ref={dropdownRef}
+            alignItems="center"
+            direction="column"
+            display="flex"
+            flex="grow"
+            id={id}
+            maxHeight="30vh"
+            overflow="auto"
+            padding={2}
+            rounding={4}
+            width={innerRef?.current?.offsetWidth}
           >
-            <Box
-              ref={dropdownRef}
-              alignItems="center"
-              direction="column"
-              display="flex"
-              flex="grow"
-              id={id}
-              maxHeight="30vh"
-              overflow="auto"
-              padding={2}
-              rounding={4}
-              width={innerRef?.current?.offsetWidth}
-            >
-              {suggestedOptions.length > 0 ? (
-                comboBoxItemList
-              ) : (
-                <Box paddingX={2} paddingY={4} width="100%">
-                  <Text color="subtle" lineClamp={1}>
-                    {noResultText ?? noResultTextDefault}
-                  </Text>
-                </Box>
-              )}
-            </Box>
-          </InternalPopover>
-        </Layer>
+            {suggestedOptions.length > 0 ? (
+              comboBoxItemList
+            ) : (
+              <Box paddingX={2} paddingY={4} width="100%">
+                <Text color="subtle" lineClamp={1}>
+                  {noResultText ?? noResultTextDefault}
+                </Text>
+              </Box>
+            )}
+          </Box>
+        </InternalPopover>
       ) : null}
     </Fragment>
   );
